@@ -23,6 +23,13 @@ const mainMenu: RoutesProps[] = [
         text: 'Failures',
         orderMenu: 3,
     },
+    {
+        id: 4,
+        icon: CircleX,
+        url: 'neighbourhood',
+        text: 'Neighbourhood',
+        orderMenu: 4,
+    },
 ]
 
 export default mainMenu
