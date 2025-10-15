@@ -1,9 +1,8 @@
 import axios from 'axios'
-// import { APIBASEURL } from '@/config/config'
+import { APIBASEURL } from '@/config/config'
 
 const apiData = axios.create({
-    baseURL: 'https://hackatorepte3.onrender.com/hydraulic/api/v1',
-    // headers: HEADERSCONFIG,
+    baseURL: APIBASEURL,
     timeout: 10000,
 })
 
