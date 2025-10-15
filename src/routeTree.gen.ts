@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthzRouteImport } from './routes/_authz'
 import { Route as AuthnRouteImport } from './routes/_authn'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthzMonitorpageRouteImport } from './routes/_authz/monitorpage'
 
 const AuthzDashboardLazyRouteImport = createFileRoute('/_authz/dashboard')()
 const AuthnResetPasswordLazyRouteImport = createFileRoute(
@@ -47,14 +48,21 @@ const AuthnResetPasswordLazyRoute = AuthnResetPasswordLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authn/reset-password.lazy').then((d) => d.Route),
 )
+const AuthzMonitorpageRoute = AuthzMonitorpageRouteImport.update({
+  id: '/monitorpage',
+  path: '/monitorpage',
+  getParentRoute: () => AuthzRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/monitorpage': typeof AuthzMonitorpageRoute
   '/reset-password': typeof AuthnResetPasswordLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/monitorpage': typeof AuthzMonitorpageRoute
   '/reset-password': typeof AuthnResetPasswordLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
 }
@@ -63,19 +71,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authn': typeof AuthnRouteWithChildren
   '/_authz': typeof AuthzRouteWithChildren
+  '/_authz/monitorpage': typeof AuthzMonitorpageRoute
   '/_authn/reset-password': typeof AuthnResetPasswordLazyRoute
   '/_authz/dashboard': typeof AuthzDashboardLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/reset-password' | '/dashboard'
+  fullPaths: '/' | '/monitorpage' | '/reset-password' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/reset-password' | '/dashboard'
+  to: '/' | '/monitorpage' | '/reset-password' | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/_authn'
     | '/_authz'
+    | '/_authz/monitorpage'
     | '/_authn/reset-password'
     | '/_authz/dashboard'
   fileRoutesById: FileRoutesById
@@ -123,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthnResetPasswordLazyRouteImport
       parentRoute: typeof AuthnRoute
     }
+    '/_authz/monitorpage': {
+      id: '/_authz/monitorpage'
+      path: '/monitorpage'
+      fullPath: '/monitorpage'
+      preLoaderRoute: typeof AuthzMonitorpageRouteImport
+      parentRoute: typeof AuthzRoute
+    }
   }
 }
 
@@ -137,10 +154,12 @@ const AuthnRouteChildren: AuthnRouteChildren = {
 const AuthnRouteWithChildren = AuthnRoute._addFileChildren(AuthnRouteChildren)
 
 interface AuthzRouteChildren {
+  AuthzMonitorpageRoute: typeof AuthzMonitorpageRoute
   AuthzDashboardLazyRoute: typeof AuthzDashboardLazyRoute
 }
 
 const AuthzRouteChildren: AuthzRouteChildren = {
+  AuthzMonitorpageRoute: AuthzMonitorpageRoute,
   AuthzDashboardLazyRoute: AuthzDashboardLazyRoute,
 }
 
