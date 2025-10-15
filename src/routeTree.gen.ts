@@ -18,6 +18,7 @@ import { Route as AuthzMonitorpageRouteImport } from './routes/_authz/monitorpag
 
 const AuthzProfileLazyRouteImport = createFileRoute('/_authz/profile')()
 const AuthzMapLazyRouteImport = createFileRoute('/_authz/map')()
+const AuthzFailuresLazyRouteImport = createFileRoute('/_authz/failures')()
 const AuthzDashboardLazyRouteImport = createFileRoute('/_authz/dashboard')()
 const AuthnSignUpLazyRouteImport = createFileRoute('/_authn/sign-up')()
 const AuthnSignInLazyRouteImport = createFileRoute('/_authn/sign-in')()
@@ -50,6 +51,13 @@ const AuthzMapLazyRoute = AuthzMapLazyRouteImport.update({
   path: '/map',
   getParentRoute: () => AuthzRoute,
 } as any).lazy(() => import('./routes/_authz/map.lazy').then((d) => d.Route))
+const AuthzFailuresLazyRoute = AuthzFailuresLazyRouteImport.update({
+  id: '/failures',
+  path: '/failures',
+  getParentRoute: () => AuthzRoute,
+} as any).lazy(() =>
+  import('./routes/_authz/failures.lazy').then((d) => d.Route),
+)
 const AuthzDashboardLazyRoute = AuthzDashboardLazyRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -91,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
+  '/failures': typeof AuthzFailuresLazyRoute
   '/map': typeof AuthzMapLazyRoute
   '/profile': typeof AuthzProfileLazyRoute
 }
@@ -101,6 +110,7 @@ export interface FileRoutesByTo {
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
+  '/failures': typeof AuthzFailuresLazyRoute
   '/map': typeof AuthzMapLazyRoute
   '/profile': typeof AuthzProfileLazyRoute
 }
@@ -114,6 +124,7 @@ export interface FileRoutesById {
   '/_authn/sign-in': typeof AuthnSignInLazyRoute
   '/_authn/sign-up': typeof AuthnSignUpLazyRoute
   '/_authz/dashboard': typeof AuthzDashboardLazyRoute
+  '/_authz/failures': typeof AuthzFailuresLazyRoute
   '/_authz/map': typeof AuthzMapLazyRoute
   '/_authz/profile': typeof AuthzProfileLazyRoute
 }
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/failures'
     | '/map'
     | '/profile'
   fileRoutesByTo: FileRoutesByTo
@@ -136,6 +148,7 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/failures'
     | '/map'
     | '/profile'
   id:
@@ -148,6 +161,7 @@ export interface FileRouteTypes {
     | '/_authn/sign-in'
     | '/_authn/sign-up'
     | '/_authz/dashboard'
+    | '/_authz/failures'
     | '/_authz/map'
     | '/_authz/profile'
   fileRoutesById: FileRoutesById
@@ -193,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/map'
       fullPath: '/map'
       preLoaderRoute: typeof AuthzMapLazyRouteImport
+      parentRoute: typeof AuthzRoute
+    }
+    '/_authz/failures': {
+      id: '/_authz/failures'
+      path: '/failures'
+      fullPath: '/failures'
+      preLoaderRoute: typeof AuthzFailuresLazyRouteImport
       parentRoute: typeof AuthzRoute
     }
     '/_authz/dashboard': {
@@ -250,6 +271,7 @@ const AuthnRouteWithChildren = AuthnRoute._addFileChildren(AuthnRouteChildren)
 interface AuthzRouteChildren {
   AuthzMonitorpageRoute: typeof AuthzMonitorpageRoute
   AuthzDashboardLazyRoute: typeof AuthzDashboardLazyRoute
+  AuthzFailuresLazyRoute: typeof AuthzFailuresLazyRoute
   AuthzMapLazyRoute: typeof AuthzMapLazyRoute
   AuthzProfileLazyRoute: typeof AuthzProfileLazyRoute
 }
@@ -257,6 +279,7 @@ interface AuthzRouteChildren {
 const AuthzRouteChildren: AuthzRouteChildren = {
   AuthzMonitorpageRoute: AuthzMonitorpageRoute,
   AuthzDashboardLazyRoute: AuthzDashboardLazyRoute,
+  AuthzFailuresLazyRoute: AuthzFailuresLazyRoute,
   AuthzMapLazyRoute: AuthzMapLazyRoute,
   AuthzProfileLazyRoute: AuthzProfileLazyRoute,
 }

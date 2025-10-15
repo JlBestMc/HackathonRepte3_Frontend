@@ -1,5 +1,5 @@
 import type { RoutesProps } from '@/types/interfaces'
-import { ChartArea, MapPinned } from 'lucide-react'
+import { ChartArea, CircleX, MapPinned } from 'lucide-react'
 
 const mainMenu: RoutesProps[] = [
     {
@@ -15,6 +15,13 @@ const mainMenu: RoutesProps[] = [
         url: 'map',
         text: 'Map',
         orderMenu: 2,
+    },
+    {
+        id: 3,
+        icon: CircleX,
+        url: 'failures',
+        text: 'Failures',
+        orderMenu: 3,
     },
 ]
 
