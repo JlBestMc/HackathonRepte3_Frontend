@@ -7,3 +7,6 @@ export type RoutesProps = {
     text: string
     orderMenu?: number
 }
+
+// Minimal user role type used by guards. Extend as needed.
+export type UserRoleType = 'admin' | 'user' | 'viewer'
