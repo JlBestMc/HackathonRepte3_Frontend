@@ -52,9 +52,7 @@ const ButtonSignOut = ({
                     disabled={isLoading}
                     {...props}
                 >
-                    {isLoading
-                        ? 'Cerrando sesión...'
-                        : children || content.textButton}
+                    {isLoading ? 'Closing…' : children || content.textButton}
                 </Button>
             ) : (
                 <button
@@ -63,9 +61,7 @@ const ButtonSignOut = ({
                     disabled={isLoading}
                     {...props}
                 >
-                    {isLoading
-                        ? 'Cerrando sesión...'
-                        : children || content.textButton}
+                    {isLoading ? 'Closing…' : children || content.textButton}
                 </button>
             )}
         </>
