@@ -24,6 +24,7 @@ const Index = () => {
                                 className="h-12 w-12"
                                 src={github}
                                 alt="GitHub"
+                                
                             />
                         </div>
                     </div>
@@ -76,9 +77,9 @@ const Index = () => {
                     </div>
                 </section>
                 <div>
-                    <p className="absolute bottom-4 right-120 text-base md:text-sm text-white">
+                    <p className="absolute bottom-4 right-10 text-base md:text-sm text-white">
                         Hackathon Grup 1 repte 3 - Antonio - Omar - Juan Luis -
-                        Jesus - Isaac - David
+                        Jesus - Isaac - David - Alfonso - Toni
                     </p>
                 </div>
             </main>

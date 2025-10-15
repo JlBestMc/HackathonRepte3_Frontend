@@ -1,6 +1,4 @@
-const content = {
-    textFilterByDNI: 'Filter by DNI',
-    textNoResult: 'No results',
+export default {
+    textFilterByDNI: 'Filtrar por DNI',
+    textNoResult: 'Sin resultados',
 }
-
-export default content
