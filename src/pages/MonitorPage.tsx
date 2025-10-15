@@ -1,6 +1,13 @@
-// src/routes/index.tsx
-import { useState } from 'react'
+// src/pages/MonitorPage.tsx
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import Loading from '@components/ui/Loading'
+import ErrorApi from '@components/ui/ErrorApi'
+import { getNeighborhoods } from '@/services/hackatorepte3Service'
 import metricsData from '../config/data/metrics.json'
+import NeighborhoodConsumptionChart from '@components/charts/NeighborhoodConsumptionChart'
+import DistrictAveragesBarChart, { type DistrictAverage } from '@components/charts/DistrictAveragesBarChart'
+import { getAverages } from '@/services/hackatorepte3Service'
 
 interface BarItem {
   hour: string
@@ -9,9 +16,43 @@ interface BarItem {
 }
 
 export default function HomePage() {
-  // Datos estáticos: se cargan una sola vez al montar
-  const barData: BarItem[] = metricsData.barData
-  const radialValues: number[] = metricsData.radialValues
+  // 1) Pedimos datos al backend. Si no están disponibles o el shape no coincide,
+  // seguimos usando los datos estáticos de metrics.json.
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['metrics'],
+    queryFn: () => getNeighborhoods(),
+  })
+
+  const {
+    data: averagesRaw,
+    isPending: avgPending,
+    isError: avgIsError,
+    error: avgError,
+  } = useQuery({
+    queryKey: ['averages'],
+    queryFn: () => getAverages(),
+  })
+
+  // 2) Intentamos adaptar la respuesta al shape esperado por los gráficos
+  type BackendMetrics = { barData?: BarItem[]; radialValues?: number[] }
+  const { barData, radialValues } = useMemo(() => {
+    // Si el backend ya devuelve el mismo shape que metrics.json, úsalo directamente
+    if (data && typeof data === 'object') {
+      const { barData: maybeBar, radialValues: maybeRadials } = data as BackendMetrics
+      if (Array.isArray(maybeBar) && Array.isArray(maybeRadials)) {
+        return {
+          barData: maybeBar as BarItem[],
+          radialValues: maybeRadials as number[],
+        }
+      }
+    }
+
+    // Fallback a datos estáticos
+    return {
+      barData: metricsData.barData as BarItem[],
+      radialValues: metricsData.radialValues as number[],
+    }
+  }, [data])
 
   // Validación básica
   if (!barData || !radialValues || barData.length === 0 || radialValues.length === 0) {
@@ -22,10 +63,12 @@ export default function HomePage() {
     )
   }
 
-  const globalMax = Math.max(
-    ...barData.map(item => Math.max(item.dom, item.ind)),
-    1
-  )
+  if (isPending || avgPending) return <Loading />
+  if ((isError && error) || (avgIsError && avgError)) {
+    return <ErrorApi message={(error || avgError)!.message} />
+  }
+
+  // globalMax no es necesario con Recharts; la escala se calcula automáticamente
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#2E5B9C] to-[#00E0D0] text-white p-4 md:p-8">
@@ -58,45 +101,13 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Gràfic de consum per sectors */}
-      <div className="mb-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6 text-center">
-        <div className="mb-4">
+  {/* Gràfic de consum per sectors */}
+      <div className="mb-8 bg-white/10 backdrop-blur-sm border flex flex-col  border-white/20 rounded-lg p-6 text-center">
+        <div className="mb-4 ">
           <h2 className="text-xl font-bold">Consum d’aigua per sectors</h2>
           <p className="text-sm opacity-80">Últimes 24 hores a l’Àrea Metropolitana de Barcelona</p>
         </div>
-        <div className="h-64 flex items-end justify-center gap-4"> {/* 👈 gap aumentado */}
-          {barData.map((item, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <div className="w-30 flex flex-col-reverse gap-1" style={{ height: '160px' }}> {/* 👈 w-10 para barras más anchas */}
-                <div
-                  className="w-full rounded-t-sm transition-all duration-700 ease-in-out"
-                  style={{
-                    height: `${(item.ind / globalMax) * 100}%`,
-                    backgroundColor: '#00E0D0',
-                  }}
-                ></div>
-                <div
-                  className="w-full rounded-t-sm transition-all duration-700 ease-in-out"
-                  style={{
-                    height: `${(item.dom / globalMax) * 100}%`,
-                    backgroundColor: '#2E5B9C',
-                  }}
-                ></div>
-              </div>
-              <span className="text-xs mt-2 font-medium">{item.hour}:00</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex justify-center gap-6 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#2E5B9C]"></div>
-            <span>Domèstic</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#00E0D0]"></div>
-            <span>Industrial/Comercial</span>
-          </div>
-        </div>
+        <NeighborhoodConsumptionChart data={barData} className="h-96" />
       </div>
 
       {/* Radial Charts */}
@@ -110,10 +121,10 @@ export default function HomePage() {
           const dashOffset = dashArray - (percentage / 100) * dashArray
 
           return (
-            <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center">
+            <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 text-center">
               <h3 className="text-sm font-medium mb-1">{titles[index]}</h3>
               <p className="text-xs opacity-70 mb-4">Agosto-Septiembre 2015</p>
-              <div className="relative w-32 h-32 mx-auto">
+              <div className="relative w-44 h-44 mx-auto">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <circle cx="50" cy="50" r="40" fill="none" stroke="#ffffff30" strokeWidth="8" />
                   <circle
@@ -131,13 +142,28 @@ export default function HomePage() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-2xl font-bold">{value}</span>
+                  <span className="text-3xl font-bold">{value}</span>
                   <span className="text-xs opacity-80">Visitors</span>
                 </div>
               </div>
             </div>
           )
         })}
+      </div>
+
+      {/* Averages by District */}
+      <div className="mb-8 bg-white/10 backdrop-blur-sm border border-white/20 flex flex-col rounded-lg p-6 text-center">
+        <div className="mb-4">
+          <h2 className="text-xl font-bold">Promedio de consumo por distrito</h2>
+          <p className="text-sm opacity-80">Datos del endpoint /averages</p>
+        </div>
+        <DistrictAveragesBarChart
+          data={Object.entries(averagesRaw ?? {}).map(([district, value]) => ({
+            district,
+            value: Number(value),
+          })) as DistrictAverage[]}
+          className="h-[28rem]"
+        />
       </div>
 
       {/* Footer */}

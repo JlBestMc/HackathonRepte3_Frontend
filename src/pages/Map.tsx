@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import districtsData from '../config/data/districts.json'
 import mapImage from '../assets/images/Mapa.png'
+import { useQuery } from '@tanstack/react-query'
+import { getAverages } from '@/services/hackatorepte3Service'
+import Loading from '@components/ui/Loading'
+import ErrorApi from '@components/ui/ErrorApi'
 
 interface District {
     name: string
@@ -33,17 +37,56 @@ export default function MapPage() {
         console.log('Posición actualizada:', newDistricts[index])
     }
 
+    // 1) Traer promedios del backend
+    const {
+        data: averagesRaw,
+        isPending,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ['averages-map'],
+        queryFn: () => getAverages(),
+    })
+
+    // 2) Normalización de nombres para cruzar API <-> JSON local
+    const normalize = (s: string) =>
+        s
+            .toLowerCase()
+            .replace(/st\.?/g, 'sant') // "St." -> "Sant"
+            .replace(/-/g, ' ')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // quitar acentos
+            .replace(/\s+/g, ' ')
+            .trim()
+
+    const averagesIndex = useMemo(() => {
+        const idx: Record<string, number> = {}
+        if (averagesRaw && typeof averagesRaw === 'object') {
+            Object.entries(averagesRaw as Record<string, number>).forEach(
+                ([k, v]) => {
+                    idx[normalize(k)] = Number(v)
+                }
+            )
+        }
+        return idx
+    }, [averagesRaw])
+
+    // Sin color por intensidad. Conservamos solo datos para tooltip.
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-900 to-cyan-800 text-white p-4 md:p-8">
             <div className="mb-8 text-center">
                 <h1 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-2">
-                    🗺️ Mapa de Consumo de Agua por Distrito (2015)
+                    🗺️ Mapa de Consumo de Agua por Distrito (Promedios)
                 </h1>
                 <p className="text-sm md:text-base opacity-90 mt-1">
-                    Pasa el ratón sobre cada distrito para ver la mediana de
-                    consumo
+                    Pasa el ratón sobre cada distrito para ver el promedio de
+                    consumo. Base: endpoint /averages
                 </p>
             </div>
+
+            {isPending && <Loading />}
+            {isError && error && <ErrorApi message={error.message} />}
 
             <div className="relative max-w-4xl mx-auto">
                 <img
@@ -173,14 +216,18 @@ export default function MapPage() {
                                 💧
                             </span>
                             <span className="font-medium">
-                                Mediana:{' '}
-                                {hoveredDistrict.median_consumption_m3.toLocaleString()}{' '}
+                                Promedio:{' '}
+                                {(
+                                    averagesIndex[
+                                        normalize(hoveredDistrict.name)
+                                    ] ?? 0
+                                ).toLocaleString(undefined, {
+                                    maximumFractionDigits: 2,
+                                })}{' '}
                                 m³
                             </span>
                         </div>
-                        <p className="text-sm opacity-80">
-                            {hoveredDistrict.description}
-                        </p>
+                        <p className="text-xs opacity-70">Fuente: /averages</p>
                     </div>
                 )}
             </div>
