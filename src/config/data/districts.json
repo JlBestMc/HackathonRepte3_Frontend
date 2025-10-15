@@ -1,0 +1,60 @@
+
+{
+  "districts": [
+    {
+      "name": "Sants - Montjuïc",
+      "anomalies": 8,
+      "description": "Zona industrial con alto consumo no residencial"
+    },
+    {
+      "name": "Eixample",
+      "anomalies": 3,
+      "description": "Consumo estable, pero con picos en horas punta"
+    },
+    {
+      "name": "Ciutat Vella",
+      "anomalies": 5,
+      "description": "Redes antiguas con fugas detectadas"
+    },
+    {
+      "name": "Sant Martí",
+      "anomalies": 12,
+      "description": "Zona en expansión con nuevas conexiones"
+    },
+    {
+      "name": "Gràcia",
+      "anomalies": 2,
+      "description": "Consumo residencial bajo, poca actividad comercial"
+    },
+    {
+      "name": "Horta - Guinardó",
+      "anomalies": 4,
+      "description": "Zona residencial con baja densidad"
+    },
+    {
+      "name": "Nou Barris",
+      "anomalies": 6,
+      "description": "Consumo elevado en zonas escolares"
+    },
+    {
+      "name": "Sant Andreu",
+      "anomalies": 7,
+      "description": "Conexiones industriales con variabilidad alta"
+    },
+    {
+      "name": "Les Corts",
+      "anomalies": 3,
+      "description": "Zona universitaria con consumo estacional"
+    },
+    {
+      "name": "Sarrià - St. Gervasi",
+      "anomalies": 1,
+      "description": "Zona residencial de alto poder adquisitivo"
+    },
+    {
+      "name": "Nou Barris",
+      "anomalies": 6,
+      "description": "Zona con alta demanda por servicios públicos"
+    }
+  ]
+}

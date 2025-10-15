@@ -1,5 +1,6 @@
 // src/routes/index.tsx
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import metricsData from '../config/data/metrics.json'
 
 interface BarItem {
   hour: string
@@ -8,30 +9,17 @@ interface BarItem {
 }
 
 export default function HomePage() {
-  const [barData, setBarData] = useState<BarItem[]>([])
-  const [radialValues, setRadialValues] = useState<number[]>([])
+  // Datos estáticos: se cargan una sola vez al montar
+  const barData: BarItem[] = metricsData.barData
+  const radialValues: number[] = metricsData.radialValues
 
-  const fetchData = async () => {
-    try {
-      const res = await fetch('/data/metrics.json') // ✅ desde public/
-      if (!res.ok) throw new Error('No se pudo cargar el archivo de datos')
-      const data = await res.json()
-      setBarData(data.barData || [])
-      setRadialValues(data.radialValues || [])
-    } catch (error) {
-      console.error('Error al cargar datos:', error)
-      // Opcional: mantener datos anteriores o mostrar error
-    }
-  }
-
-  useEffect(() => {
-    fetchData() // carga inicial
-    const interval = setInterval(fetchData, 5000) // actualiza cada 5s
-    return () => clearInterval(interval)
-  }, [])
-
-  if (barData.length === 0 || radialValues.length === 0) {
-    return <div className="min-h-screen flex items-center justify-center text-white">Cargando...</div>
+  // Validación básica
+  if (!barData || !radialValues || barData.length === 0 || radialValues.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-red-900">
+        Error: datos no válidos en metrics.json
+      </div>
+    )
   }
 
   const globalMax = Math.max(
@@ -55,7 +43,7 @@ export default function HomePage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         {[
           { label: "Consum avui", value: "12.400 m³", sub: "+2.1% vs ahir", icon: "💧" },
-          { label: "Anomalies", value: "3", sub: "Últimes 24h", icon: "⚠️", color: "text-[#00CCE0]" },
+          { label: "Anomalies", value: "3", sub: "Últimes 24h", icon: "⚠️", color: "text-[#ebfdff]" },
           { label: "Temperatura", value: "22°C", sub: "Mitjana diària", icon: "🌡️" },
           { label: "Pluja", value: "0 mm", sub: "Avui", icon: "🌧️" },
         ].map((item, i) => (
@@ -76,11 +64,10 @@ export default function HomePage() {
           <h2 className="text-xl font-bold">Consum d’aigua per sectors</h2>
           <p className="text-sm opacity-80">Últimes 24 hores a l’Àrea Metropolitana de Barcelona</p>
         </div>
-        <div className="h-64 flex items-end justify-center gap-4"> {/* 👈 aumenté gap a 4 */}
+        <div className="h-64 flex items-end justify-center gap-4"> {/* 👈 gap aumentado */}
           {barData.map((item, i) => (
             <div key={i} className="flex flex-col items-center">
-              {/* 👇 Ancho aumentado de w-8 a w-10 (o más si lo prefieres) */}
-              <div className="w-10 flex flex-col-reverse gap-1" style={{ height: '160px' }}>
+              <div className="w-30 flex flex-col-reverse gap-1" style={{ height: '160px' }}> {/* 👈 w-10 para barras más anchas */}
                 <div
                   className="w-full rounded-t-sm transition-all duration-700 ease-in-out"
                   style={{
@@ -115,7 +102,7 @@ export default function HomePage() {
       {/* Radial Charts */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {radialValues.map((value, index) => {
-          const titles = ["Radial Chart - Text", "Radial Chart - Shape", "Radial Chart - Stacked"]
+          const titles = ["", "", ""]
           const maxValues = [500, 2000, 3000]
           const max = maxValues[index] ?? 1000
           const percentage = Math.min(100, (value / max) * 100)
@@ -125,7 +112,7 @@ export default function HomePage() {
           return (
             <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 text-center">
               <h3 className="text-sm font-medium mb-1">{titles[index]}</h3>
-              <p className="text-xs opacity-70 mb-4">January - June 2024</p>
+              <p className="text-xs opacity-70 mb-4">Agosto-Septiembre 2015</p>
               <div className="relative w-32 h-32 mx-auto">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <circle cx="50" cy="50" r="40" fill="none" stroke="#ffffff30" strokeWidth="8" />
