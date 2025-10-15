@@ -44,6 +44,7 @@
     "include": [
         "src",
         "src/__test__/setupTests.ts",
-        "src/routes/_authz/.lazy.tsx"
+        "src/routes/_authz/.lazy.tsx",
+        "src/routes/_authz/mappage.tsx"
     ]
 }
