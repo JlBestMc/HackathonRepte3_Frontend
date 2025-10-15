@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/base/button'
 import { Form } from '@components/ui/base/form'
 import FormFieldInput from '@/components/ui/FormFieldInput'
 import content from '@/config/data/formSignUp'
-
+import logo from '../assets/images/logo-index.png'
+import { Link } from '@tanstack/react-router'
 const registerUserSchema = z
     .object({
         userName: z
@@ -79,7 +80,20 @@ const RegisterUserForm = () => {
     return (
         <Form {...form}>
             {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
-            <form>
+            <form className="max-w-md mx-auto">
+                <Link className="flex items-center justify-center mb-3" to="/">
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="h-16 cursor-pointer hover:scale-[1.1] transition-transform ease-in-out duration-500"
+                    />
+                </Link>
+                <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 text-center">
+                    Create your account
+                </h1>
+                <p className="mt-2 text-center text-gray-500">
+                    Start your with us today.
+                </p>
                 <FormFieldInput
                     control={form.control}
                     fieldName="userName"
@@ -118,11 +132,21 @@ const RegisterUserForm = () => {
                     label={content.labelConfirmPassword}
                     type="password"
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit">
                     {form.formState.isSubmitting
                         ? content.textButtonSending
                         : content.textButtonSend}
                 </Button>
+                <div className="mt-8 text-xs text-gray-500 flex items-center justify-center gap-2">
+                    <span>Already have an account?</span>
+                    <Link
+                        to="/sign-in"
+                        type="button"
+                        className="underline underline-offset-4 hover:text-gray-700"
+                    >
+                        Sign In
+                    </Link>
+                </div>
             </form>
             {form.formState.errors.root && (
                 <div className="text-red text-sm mt-2 text-center">

@@ -9,13 +9,13 @@ const Index = () => {
         <Main>
             <main className="w-full h-screen bg-black overflow-hidden relative ">
                 {/* Header: Logo izquierda + botones derecha */}
-                <header className="absolute top-0 left-0 right-0 z-40">
+                <header className="absolute px-6 top-0 left-0 right-0 z-40">
                     <div className="flex items-center justify-between px-6 py-4">
                         {/* Logo */}
                         <img
                             src={logo}
                             alt="Logo"
-                            className="h-10 w-auto md:h-16"
+                            className="h-10 w-auto md:h-18 cursor-pointer hover:scale-[1.1] transition-transform ease-in-out duration-500"
                         />
 
                         {/* Botones Auth */}
@@ -32,7 +32,7 @@ const Index = () => {
                 {/* Spline arriba en móvil, a la derecha en md+ (fondo) */}
                 <div
                     className="w-full h-[55vh] md:h-full transition-opacity duration-800 ease-out"
-                    style={{ clipPath: 'inset(0 0 60px 0)' }}
+                    style={{ clipPath: 'inset(0 0 56px 0)' }}
                 >
                     <Spline scene="https://prod.spline.design/jXRW7HLwo1u3g2LU/scene.splinecode" />
                 </div>
@@ -44,7 +44,7 @@ const Index = () => {
                             Monitor water consumption with graphs and
                             notifications
                         </h1>
-                        <p className="mt-4 md:mt-6 text-base md:text-xl py-3 text-black/90 max-w-[60ch]">
+                        <p className="mt-4 md:mt-6 text-base md:text-xl py-6 text-black/90 max-w-[60ch]">
                             With Hydrodata you can monitor your water
                             consumption and receive alerts. Also you can
                             visualize your data with beautiful graphs.

@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/base/button'
 import { Form } from '@components/ui/base/form'
 import FormFieldInput from '@/components/ui/FormFieldInput'
 import content from '@/config/data/formSignIn.ts'
+import logo from '../assets/images/logo-index.png'
+import { Link } from '@tanstack/react-router'
 
 const signInSchema = z.object({
     email: z
@@ -58,6 +60,20 @@ const FormSignIn = () => {
         <Form {...form}>
             {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
             <form>
+                <Link className="flex items-center justify-center mb-8" to="/">
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="h-16 cursor-pointer hover:scale-[1.1] transition-transform ease-in-out duration-500"
+                    />
+                </Link>
+                <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 text-center">
+                    Welcome back!
+                </h1>
+                <p className="mt-2 text-center text-gray-500 mb-5">
+                    Graphs, maps and notifications — all in one place.
+                </p>
+
                 <FormFieldInput
                     control={form.control}
                     fieldName="email"
@@ -77,6 +93,16 @@ const FormSignIn = () => {
                         ? content.textButtonSending
                         : content.textButtonSend}
                 </Button>
+                <div className="mt-8 text-xs text-gray-500 flex items-center justify-center gap-2">
+                    <span>Don’t have an account?</span>
+                    <Link
+                        to="/sign-up"
+                        type="button"
+                        className="underline underline-offset-4 hover:text-gray-700"
+                    >
+                        Sign Up
+                    </Link>
+                </div>
             </form>
             {form.formState.errors.root && (
                 <div className="text-red text-sm mt-2 text-center">

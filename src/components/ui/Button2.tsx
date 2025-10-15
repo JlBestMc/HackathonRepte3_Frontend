@@ -29,7 +29,7 @@ function Button2({
     const sizeCfg = {
         sm: { padding: 'px-3 py-2', text: 'text-xs', icon: 'w-4 h-4' },
         md: { padding: 'px-3 py-3', text: 'text-md', icon: 'w-6 h-6' },
-        lg: { padding: 'px-10 py-3', text: 'text-base', icon: 'w-6 h-6' },
+        lg: { padding: 'px-12 py-3', text: 'text-base', icon: 'w-6 h-6' },
     } as const
     const cfg = sizeCfg[size] || sizeCfg.md
     return (
