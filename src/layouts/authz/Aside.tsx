@@ -23,7 +23,7 @@ import {
     SidebarSeparator,
     SidebarRail,
 } from '@components/ui/base/sidebar'
-// import ButtonSignOut from '@components/ui/ButtonSignOut'
+import ButtonSignOut from '@components/ui/ButtonSignOut'
 import MenuItems from '@components/ui/Menutems'
 import mainMenu from '@/config/data/menus/main'
 import content from '@data/layouts/asideAuthz'
@@ -56,8 +56,7 @@ const Aside = () => {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    Button sign out
-                                    {/* <ButtonSignOut asbutton={false} /> */}
+                                    <ButtonSignOut asbutton={false} />
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
