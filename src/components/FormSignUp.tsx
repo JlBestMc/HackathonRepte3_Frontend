@@ -1,4 +1,4 @@
-// import { toast } from 'sonner'
+import { toast } from 'sonner'
 import { Lock, LockKeyhole, Mail, User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/base/button'
 import { Form } from '@components/ui/base/form'
 import FormFieldInput from '@/components/ui/FormFieldInput'
 import content from '@/config/data/formSignUp'
+import { registerUser } from '@services/supabaseService'
+import { useLogger } from '@/hooks/useLogger'
 
 const registerUserSchema = z
     .object({
@@ -14,10 +16,6 @@ const registerUserSchema = z
             .string()
             .min(3, content.errorUserNameTooShort)
             .max(20, content.errorUserNameTooLong),
-        userLastName: z
-            .string()
-            .min(3, content.errorUserLastNameTooShort)
-            .max(20, content.errorUserLastNameTooLong),
         email: z
             .string()
             .email(content.errorEmailInvalid)
@@ -39,15 +37,13 @@ const registerUserSchema = z
 type FormData = z.infer<typeof registerUserSchema>
 
 const RegisterUserForm = () => {
-    // const { logError, logSuccess } = useLogger('RegisterUserForm')
+    const { logError, logSuccess } = useLogger('RegisterUserForm')
 
     const defaultValues = {
         email: '',
         password: '',
         confirmPassword: '',
         userName: '',
-        userLastName: '',
-        role: 'user' as const,
     }
 
     const form = useForm<FormData>({
@@ -55,45 +51,33 @@ const RegisterUserForm = () => {
         defaultValues: defaultValues,
     })
 
-    // const onSubmit = async (formData: FormData) => {
-    //     try {
-    //         const newUser = await createUser({
-    //             email: formData.email,
-    //             password: formData.password,
-    //             user_name: formData.userName,
-    //             user_last_name: formData.userLastName,
-    //             dni: formData.dni,
-    //             role: formData.role,
-    //         })
-    //         toast.success(content.textToastSuccess)
-    //         logSuccess(content.textToastSuccess, content.title)
-    //         form.reset()
-    //         return newUser
-    //     } catch (error) {
-    //         logError(content.textToastFail, error, content.title)
-    //         toast.error(content.textToastFail)
-    //         return
-    //     }
-    // }
+    const onSubmit = async (formData: FormData) => {
+        try {
+            const newUser = await registerUser(
+                formData.email,
+                formData.password,
+                formData.userName
+            )
+            toast.success(content.textToastSuccess)
+            logSuccess(content.textToastSuccess, content.title)
+            form.reset()
+            return newUser
+        } catch (error) {
+            logError(content.textToastFail, error, content.title)
+            toast.error(content.textToastFail)
+            return
+        }
+    }
 
     return (
         <Form {...form}>
-            {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormFieldInput
                     control={form.control}
                     fieldName="userName"
                     icon={User}
                     label={content.labelUserName}
                     placeholder="Michael"
-                    type="text"
-                />
-                <FormFieldInput
-                    control={form.control}
-                    fieldName="userLastName"
-                    icon={User}
-                    label={content.labelUserLastName}
-                    placeholder="Barbaro"
                     type="text"
                 />
                 <FormFieldInput
