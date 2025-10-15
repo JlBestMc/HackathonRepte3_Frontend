@@ -1,21 +1,32 @@
 // src/pages/MapPage.tsx
 import { useState } from 'react'
 import districtsData from '../config/data/districts.json'
+import mapImage from '../assets/images/Mapa.png'
 
 interface District {
   name: string
   anomalies: number
   description: string
+  position: {
+    top: number
+    left: number
+    width: number
+    height: number
+  }
 }
 
 export default function MapPage() {
   const [hoveredDistrict, setHoveredDistrict] = useState<District | null>(null)
+  const [debugMode, setDebugMode] = useState(false) // Modo ajuste activado
+  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(null)
 
-  // Mapeo de nombres a IDs para coincidir con el SVG
-  const districtMap: Record<string, District> = {}
-  districtsData.districts.forEach(d => {
-    districtMap[d.name] = d
-  })
+  // Función para actualizar posición de un distrito
+  const updatePosition = (index: number, key: keyof District['position'], value: number) => {
+    const newDistricts = [...districtsData.districts]
+    newDistricts[index].position[key] = value
+    // Aquí podrías guardar los cambios si lo necesitas (localStorage, API, etc.)
+    console.log('Posición actualizada:', newDistricts[index])
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 to-cyan-800 text-white p-4 md:p-8">
@@ -29,175 +40,91 @@ export default function MapPage() {
         </p>
       </div>
 
-      {/* Contenedor del mapa + tooltip */}
-      <div className="relative flex justify-center">
-        {/* SVG del mapa */}
-        <svg
-          width="800"
-          height="600"
-          viewBox="0 0 800 600"
-          className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
+
+      {/* Contenedor del mapa + overlays */}
+      <div className="relative max-w-4xl mx-auto">
+        {/* Imagen del mapa */}
+        <img
+          src={mapImage}
+          alt="Mapa de Barcelona"
+          className="w-full h-auto rounded-xl shadow-lg"
           style={{ maxWidth: '100%', maxHeight: '80vh' }}
-        >
-          {/* Fondo blanco para mejor visibilidad */}
-          <rect width="800" height="600" fill="#f8fafc" />
+        />
 
-          {/* Definición de los paths de los distritos */}
-          {/* ⚠️ NOTA: Estos paths son aproximados. Debes reemplazarlos con los reales de tu mapa SVG */}
-          <g transform="scale(0.8) translate(50, 50)">
-            {/* Sants - Montjuïc */}
-            <path
-              id="sants-montjuic"
-              d="M100,100 L150,80 L200,100 L220,150 L180,200 L120,180 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Sants - Montjuïc'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="140" y="140" fontSize="12" fill="white" textAnchor="middle">Sants - Montjuïc</text>
+        {/* Overlay invisible por distrito — DELANTE de la imagen */}
+        {districtsData.districts.map((district, index) => (
+          <div
+            key={index}
+            className={`absolute cursor-pointer transition-all duration-200 ${
+              debugMode ? 'border-2 border-yellow-400 bg-yellow-200/30' : 'hover:bg-[#00E0D0]/30'
+            }`}
+            style={{
+              top: `${district.position.top}px`,
+              left: `${district.position.left}px`,
+              width: `${district.position.width}px`,
+              height: `${district.position.height}px`,
+              backgroundColor: debugMode ? 'rgba(255, 255, 255, 0)' : 'transparent',
+              
+              zIndex: 10,
+            }}
+            onMouseEnter={() => setHoveredDistrict(district)}
+            onMouseLeave={() => setHoveredDistrict(null)}
+            onClick={() => {
+              if (debugMode) setSelectedDistrict(district)
+            }}
+          />
+        ))}
 
-            {/* Eixample */}
-            <path
-              id="eixample"
-              d="M250,100 L300,80 L350,100 L370,150 L330,200 L270,180 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Eixample'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="300" y="140" fontSize="12" fill="white" textAnchor="middle">Eixample</text>
-
-            {/* Ciutat Vella */}
-            <path
-              id="ciutat-vella"
-              d="M380,100 L430,80 L480,100 L500,150 L460,200 L400,180 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Ciutat Vella'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="430" y="140" fontSize="12" fill="white" textAnchor="middle">Ciutat Vella</text>
-
-            {/* Sant Martí */}
-            <path
-              id="sant-marti"
-              d="M510,100 L560,80 L610,100 L630,150 L590,200 L530,180 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Sant Martí'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="560" y="140" fontSize="12" fill="white" textAnchor="middle">Sant Martí</text>
-
-            {/* Gràcia */}
-            <path
-              id="gracia"
-              d="M100,250 L150,230 L200,250 L220,300 L180,350 L120,330 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Gràcia'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="140" y="290" fontSize="12" fill="white" textAnchor="middle">Gràcia</text>
-
-            {/* Horta - Guinardó */}
-            <path
-              id="horta-guinardo"
-              d="M250,250 L300,230 L350,250 L370,300 L330,350 L270,330 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Horta - Guinardó'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="300" y="290" fontSize="12" fill="white" textAnchor="middle">Horta - Guinardó</text>
-
-            {/* Nou Barris */}
-            <path
-              id="nou-barris"
-              d="M380,250 L430,230 L480,250 L500,300 L460,350 L400,330 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Nou Barris'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="430" y="290" fontSize="12" fill="white" textAnchor="middle">Nou Barris</text>
-
-            {/* Sant Andreu */}
-            <path
-              id="sant-andreu"
-              d="M510,250 L560,230 L610,250 L630,300 L590,350 L530,330 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Sant Andreu'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="560" y="290" fontSize="12" fill="white" textAnchor="middle">Sant Andreu</text>
-
-            {/* Les Corts */}
-            <path
-              id="les-corts"
-              d="M100,400 L150,380 L200,400 L220,450 L180,500 L120,480 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Les Corts'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="140" y="440" fontSize="12" fill="white" textAnchor="middle">Les Corts</text>
-
-            {/* Sarrià - St. Gervasi */}
-            <path
-              id="sarria-st-gervasi"
-              d="M250,400 L300,380 L350,400 L370,450 L330,500 L270,480 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Sarrià - St. Gervasi'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="300" y="440" fontSize="12" fill="white" textAnchor="middle">Sarrià - St. Gervasi</text>
-
-            {/* Nou Barris (segundo) */}
-            <path
-              id="nou-barris-2"
-              d="M380,400 L430,380 L480,400 L500,450 L460,500 L400,480 Z"
-              fill="#2E5B9C"
-              stroke="#fff"
-              strokeWidth="2"
-              onMouseEnter={() => setHoveredDistrict(districtMap['Nou Barris'])}
-              onMouseLeave={() => setHoveredDistrict(null)}
-              className="cursor-pointer transition-all duration-200 hover:fill-[#00E0D0]"
-            />
-            <text x="430" y="440" fontSize="12" fill="white" textAnchor="middle">Nou Barris</text>
-          </g>
-        </svg>
+        {/* Panel de ajuste (solo en modo debug) */}
+        {debugMode && selectedDistrict && (
+          <div className="absolute top-4 right-4 bg-white text-black p-4 rounded-lg shadow-lg z-50 max-w-xs">
+            <h3 className="font-bold mb-2">Ajustando: {selectedDistrict.name}</h3>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              <label className="text-xs">Top:</label>
+              <input
+                type="number"
+                value={selectedDistrict.position.top}
+                onChange={(e) => updatePosition(districtsData.districts.indexOf(selectedDistrict), 'top', parseInt(e.target.value))}
+                className="border p-1 text-sm"
+              />
+              <label className="text-xs">Left:</label>
+              <input
+                type="number"
+                value={selectedDistrict.position.left}
+                onChange={(e) => updatePosition(districtsData.districts.indexOf(selectedDistrict), 'left', parseInt(e.target.value))}
+                className="border p-1 text-sm"
+              />
+              <label className="text-xs">Width:</label>
+              <input
+                type="number"
+                value={selectedDistrict.position.width}
+                onChange={(e) => updatePosition(districtsData.districts.indexOf(selectedDistrict), 'width', parseInt(e.target.value))}
+                className="border p-1 text-sm"
+              />
+              <label className="text-xs">Height:</label>
+              <input
+                type="number"
+                value={selectedDistrict.position.height}
+                onChange={(e) => updatePosition(districtsData.districts.indexOf(selectedDistrict), 'height', parseInt(e.target.value))}
+                className="border p-1 text-sm"
+              />
+            </div>
+            <button
+              onClick={() => setSelectedDistrict(null)}
+              className="w-full px-3 py-1 bg-gray-500 text-white rounded text-sm"
+            >
+              Cerrar
+            </button>
+          </div>
+        )}
 
         {/* Tooltip flotante */}
         {hoveredDistrict && (
           <div
-            className="absolute bg-white text-black p-4 rounded-lg shadow-lg border border-gray-200 max-w-xs"
+            className="absolute bg-white text-black p-4 rounded-lg shadow-lg border border-gray-200 max-w-xs z-50"
             style={{
               top: '20px',
               right: '20px',
-              zIndex: 1000,
               transform: 'translateX(-50%)',
             }}
           >

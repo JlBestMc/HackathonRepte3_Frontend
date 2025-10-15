@@ -8,5 +8,5 @@
     { "hour": "16", "dom": 102, "ind": 92 },
     { "hour": "20", "dom": 85, "ind": 40 }
   ],
-  "radialValues": [100, 1260, 1830]
+  "radialValues": [400, 1260, 1830]
 }
