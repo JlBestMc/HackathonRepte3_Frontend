@@ -10,10 +10,9 @@ const Failures = () => {
     })
 
     if (isPending) return <Loading />
-
     if (isError && error) return <ErrorApi message={error.message} />
 
-    console.log(data.results)
+    console.log(data)
 
     return <></>
 }

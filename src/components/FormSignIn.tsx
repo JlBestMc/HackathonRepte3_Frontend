@@ -1,7 +1,7 @@
-// import { toast } from 'sonner'
+import { toast } from 'sonner'
 import { Mail, Lock } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-// import { useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/base/button'
@@ -10,6 +10,7 @@ import FormFieldInput from '@/components/ui/FormFieldInput'
 import content from '@/config/data/formSignIn.ts'
 import logo from '../assets/images/logo-index.png'
 import { Link } from '@tanstack/react-router'
+import { signInWithPassword } from '@services/supabaseService'
 
 const signInSchema = z.object({
     email: z
@@ -26,40 +27,39 @@ const FormSignIn = () => {
         email: '',
         password: '',
     }
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const form = useForm<FormData>({
         resolver: zodResolver(signInSchema),
         defaultValues: defaultValues,
     })
 
-    // const onSubmit = async (formData: FormData) => {
-    //     try {
-    //         const error = 'waiting for data'
-    //         if (error) {
-    //             form.setError('root', {
-    //                 type: 'server',
-    //             })
-    //             toast.error(`${content.textToastFail}`)
-    //             return
-    //         }
-    //         navigate({ to: '/dashboard' })
-    //     } catch (error) {
-    //         const message = 'waiting for data'
-
-    //         form.setError('root', {
-    //             type: 'server',
-    //             message,
-    //         })
-    //         toast.error(`${content.textToastFail}: ${message}`)
-    //         return
-    //     }
-    // }
+    const onSubmit = async (formData: FormData) => {
+        try {
+            const { error } = await signInWithPassword(
+                formData.email,
+                formData.password
+            )
+            if (error) {
+                form.setError('root', {
+                    type: 'server',
+                })
+                toast.error(`${content.textToastFail}`)
+                return
+            }
+            navigate({ to: '/dashboard' })
+        } catch (error) {
+            form.setError('root', {
+                type: 'server',
+            })
+            toast.error(`${content.textToastFail}: ${error.message}`)
+            return
+        }
+    }
 
     return (
         <Form {...form}>
-            {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <Link className="flex items-center justify-center mb-8" to="/">
                     <img
                         src={logo}
