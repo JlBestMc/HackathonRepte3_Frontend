@@ -17,7 +17,7 @@ interface District {
 
 export default function MapPage() {
   const [hoveredDistrict, setHoveredDistrict] = useState<District | null>(null)
-  const [debugMode, setDebugMode] = useState(false)
+  const [debugMode, ] = useState(false)
   const [selectedDistrict, setSelectedDistrict] = useState<District | null>(null)
 
   const updatePosition = (index: number, key: keyof District['position'], value: number) => {
