@@ -50,7 +50,7 @@ const FormFieldInput = <T extends FieldValues>({
                                 type={type}
                                 {...field}
                                 placeholder={placeholder}
-                                className="border-gray-300 dark:border-gray-600"
+                                className="border-gray-300 dark:border-gray-600 w-full rounded-full border focus:border-black focus:ring-0 px-4  text-gray-900 placeholder-gray-400"
                             />
                         </FormControl>
                         {description && (
