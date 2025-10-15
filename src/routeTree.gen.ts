@@ -16,6 +16,8 @@ import { Route as AuthnRouteImport } from './routes/_authn'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthzMonitorpageRouteImport } from './routes/_authz/monitorpage'
 
+const AuthzProfileLazyRouteImport = createFileRoute('/_authz/profile')()
+const AuthzMapLazyRouteImport = createFileRoute('/_authz/map')()
 const AuthzDashboardLazyRouteImport = createFileRoute('/_authz/dashboard')()
 const AuthnSignUpLazyRouteImport = createFileRoute('/_authn/sign-up')()
 const AuthnSignInLazyRouteImport = createFileRoute('/_authn/sign-in')()
@@ -36,6 +38,18 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthzProfileLazyRoute = AuthzProfileLazyRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthzRoute,
+} as any).lazy(() =>
+  import('./routes/_authz/profile.lazy').then((d) => d.Route),
+)
+const AuthzMapLazyRoute = AuthzMapLazyRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AuthzRoute,
+} as any).lazy(() => import('./routes/_authz/map.lazy').then((d) => d.Route))
 const AuthzDashboardLazyRoute = AuthzDashboardLazyRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -77,6 +91,8 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
+  '/map': typeof AuthzMapLazyRoute
+  '/profile': typeof AuthzProfileLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -85,6 +101,8 @@ export interface FileRoutesByTo {
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
   '/dashboard': typeof AuthzDashboardLazyRoute
+  '/map': typeof AuthzMapLazyRoute
+  '/profile': typeof AuthzProfileLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,6 +114,8 @@ export interface FileRoutesById {
   '/_authn/sign-in': typeof AuthnSignInLazyRoute
   '/_authn/sign-up': typeof AuthnSignUpLazyRoute
   '/_authz/dashboard': typeof AuthzDashboardLazyRoute
+  '/_authz/map': typeof AuthzMapLazyRoute
+  '/_authz/profile': typeof AuthzProfileLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,6 +126,8 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/map'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -114,6 +136,8 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/map'
+    | '/profile'
   id:
     | '__root__'
     | '/'
@@ -124,6 +148,8 @@ export interface FileRouteTypes {
     | '/_authn/sign-in'
     | '/_authn/sign-up'
     | '/_authz/dashboard'
+    | '/_authz/map'
+    | '/_authz/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -154,6 +180,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authz/profile': {
+      id: '/_authz/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthzProfileLazyRouteImport
+      parentRoute: typeof AuthzRoute
+    }
+    '/_authz/map': {
+      id: '/_authz/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof AuthzMapLazyRouteImport
+      parentRoute: typeof AuthzRoute
     }
     '/_authz/dashboard': {
       id: '/_authz/dashboard'
@@ -210,11 +250,15 @@ const AuthnRouteWithChildren = AuthnRoute._addFileChildren(AuthnRouteChildren)
 interface AuthzRouteChildren {
   AuthzMonitorpageRoute: typeof AuthzMonitorpageRoute
   AuthzDashboardLazyRoute: typeof AuthzDashboardLazyRoute
+  AuthzMapLazyRoute: typeof AuthzMapLazyRoute
+  AuthzProfileLazyRoute: typeof AuthzProfileLazyRoute
 }
 
 const AuthzRouteChildren: AuthzRouteChildren = {
   AuthzMonitorpageRoute: AuthzMonitorpageRoute,
   AuthzDashboardLazyRoute: AuthzDashboardLazyRoute,
+  AuthzMapLazyRoute: AuthzMapLazyRoute,
+  AuthzProfileLazyRoute: AuthzProfileLazyRoute,
 }
 
 const AuthzRouteWithChildren = AuthzRoute._addFileChildren(AuthzRouteChildren)

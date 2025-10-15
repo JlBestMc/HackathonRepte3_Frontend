@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ChevronUp, Circle, Home } from 'lucide-react'
+import { ChevronRight, Circle, Home } from 'lucide-react'
 // import { useCurrentUser } from '@hooks/useCurrentUser'
 // import { usePermissions } from '@/hooks/usePermissions'
 // import RoleGuard from '@components/RoleGuard'
@@ -24,10 +24,9 @@ import {
     SidebarRail,
 } from '@components/ui/base/sidebar'
 // import ButtonSignOut from '@components/ui/ButtonSignOut'
-import Logo from '@components/ui/Logo'
-// import MenuItems from '@components/ui/Menutems'
-// import usersMenu from '@/config/data/menus/users'
-// import content from '@data/layouts/asideAuthz'
+import MenuItems from '@components/ui/Menutems'
+import mainMenu from '@/config/data/menus/main'
+import content from '@data/layouts/asideAuthz'
 
 const Aside = () => {
     // const { user } = useCurrentUser()
@@ -36,51 +35,58 @@ const Aside = () => {
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
-                <Logo customClasses="ml-2" />
                 <SidebarMenu className="mt-8">
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link to={'/dashboard'}>
-                                <Home className="stroke-blue-600" />
-                                {/* {content.textHome} */}
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
-            <SidebarContent></SidebarContent>
-            <SidebarSeparator />
-
-            <SidebarFooter>
-                <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
                                     <Circle className="stroke-blue-600" />
-                                    {/* {user?.user_name} */}
-                                    <ChevronUp className="ml-auto" />
+                                    Harkcoding name
+                                    <ChevronRight className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent side="top" className="w-56">
-                                {/* <RoleGuard
-                                    allowedRoles={[
-                                        'admin',
-                                        'physician',
-                                        'medical_office',
-                                    ]}
-                                >
-                                    <DropdownMenuItem>
-                                        <Link to={'/settings'}>
-                                            {content.titleSettings}
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </RoleGuard> */}
+                            <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                className="w-56"
+                            >
                                 <DropdownMenuItem>
+                                    <Link to={'/profile'}>
+                                        {content.titleSettings}
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Button sign out
                                     {/* <ButtonSignOut asbutton={false} /> */}
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>
+                        {content.titleFunctions}
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <MenuItems content={mainMenu} />
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+            <SidebarSeparator />
+
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <Link to={'/dashboard'}>
+                                <Home className="stroke-blue-600" />
+                                {content.textHome}
+                            </Link>
+                        </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
