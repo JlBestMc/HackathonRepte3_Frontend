@@ -1,0 +1,12 @@
+
+{
+  "barData": [
+    { "hour": "00", "dom": 90, "ind": 18 },
+    { "hour": "04", "dom": 98, "ind": 12 },
+    { "hour": "08", "dom": 95, "ind": 65 },
+    { "hour": "12", "dom": 10, "ind": 78 },
+    { "hour": "16", "dom": 102, "ind": 92 },
+    { "hour": "20", "dom": 85, "ind": 40 }
+  ],
+  "radialValues": [400, 1260, 1830]
+}
