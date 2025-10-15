@@ -11,6 +11,7 @@ import content from '@/config/data/formSignIn.ts'
 import logo from '../assets/images/logo-index.png'
 import { Link } from '@tanstack/react-router'
 import { signInWithPassword } from '@services/supabaseService'
+import mapSupabaseError from '@/services/mapSupabaseErrors'
 
 const signInSchema = z.object({
     email: z
@@ -41,18 +42,25 @@ const FormSignIn = () => {
                 formData.password
             )
             if (error) {
+                const { message } = mapSupabaseError(error.message)
                 form.setError('root', {
                     type: 'server',
                 })
-                toast.error(`${content.textToastFail}`)
+                toast.error(`${content.textToastFail}: ${message}`)
                 return
             }
+            form.reset()
             navigate({ to: '/dashboard' })
         } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : content.textToastFail
+            const { message } = mapSupabaseError(errorMessage)
+
             form.setError('root', {
                 type: 'server',
+                message,
             })
-            toast.error(`${content.textToastFail}: ${error.message}`)
+            toast.error(`${content.textToastFail}: ${message}`)
             return
         }
     }
