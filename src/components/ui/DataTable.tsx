@@ -21,9 +21,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/base/table'
-
-import { Label } from '@components/ui/base/label'
-import { Input } from '@/components/ui/base/input'
 import content from '@data/ui/dataTable'
 
 type DataTableProps<TData> = {
@@ -68,22 +65,6 @@ const DataTable = <TData,>({
 
     return (
         <>
-            <div className="flex items-center py-4">
-                <Label className="sr-only">{content.textFilterByDNI}</Label>
-                <Input
-                    placeholder={`${content.textFilterByDNI}…`}
-                    value={
-                        (table.getColumn('dni')?.getFilterValue() as string) ??
-                        ''
-                    }
-                    onChange={(event) =>
-                        table
-                            .getColumn('dni')
-                            ?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
-            </div>
             <div className="overflow-hidden rounded-md border">
                 <Table>
                     <TableCaption className="sr-only">{caption}</TableCaption>
