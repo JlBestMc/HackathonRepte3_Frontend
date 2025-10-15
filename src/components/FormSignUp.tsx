@@ -1,6 +1,7 @@
 import { toast } from 'sonner'
 import { Lock, LockKeyhole, Mail, User } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from '@tanstack/react-router'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/base/button'
@@ -48,6 +49,8 @@ const RegisterUserForm = () => {
         userName: '',
     }
 
+    const navigate = useNavigate()
+
     const form = useForm<FormData>({
         resolver: zodResolver(registerUserSchema),
         defaultValues: defaultValues,
@@ -63,6 +66,7 @@ const RegisterUserForm = () => {
             toast.success(content.textToastSuccess)
             logSuccess(content.textToastSuccess, content.title)
             form.reset()
+            navigate({ to: '/check-email' })
             return newUser
         } catch (error) {
             logError(content.textToastFail, error, content.title)

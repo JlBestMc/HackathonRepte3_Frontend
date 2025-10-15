@@ -15,7 +15,6 @@ import { Route as AuthzRouteImport } from './routes/_authz'
 import { Route as AuthnRouteImport } from './routes/_authn'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthzMonitorpageRouteImport } from './routes/_authz/monitorpage'
-import { Route as AuthzMappageRouteImport } from './routes/_authz/mappage'
 
 const AuthzProfileLazyRouteImport = createFileRoute('/_authz/profile')()
 const AuthzMapLazyRouteImport = createFileRoute('/_authz/map')()
@@ -26,6 +25,7 @@ const AuthnSignInLazyRouteImport = createFileRoute('/_authn/sign-in')()
 const AuthnResetPasswordLazyRouteImport = createFileRoute(
   '/_authn/reset-password',
 )()
+const AuthnCheckEmailLazyRouteImport = createFileRoute('/_authn/check-email')()
 
 const AuthzRoute = AuthzRouteImport.update({
   id: '/_authz',
@@ -87,21 +87,23 @@ const AuthnResetPasswordLazyRoute = AuthnResetPasswordLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authn/reset-password.lazy').then((d) => d.Route),
 )
+const AuthnCheckEmailLazyRoute = AuthnCheckEmailLazyRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
+  getParentRoute: () => AuthnRoute,
+} as any).lazy(() =>
+  import('./routes/_authn/check-email.lazy').then((d) => d.Route),
+)
 const AuthzMonitorpageRoute = AuthzMonitorpageRouteImport.update({
   id: '/monitorpage',
   path: '/monitorpage',
   getParentRoute: () => AuthzRoute,
 } as any)
-const AuthzMappageRoute = AuthzMappageRouteImport.update({
-  id: '/mappage',
-  path: '/mappage',
-  getParentRoute: () => AuthzRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mappage': typeof AuthzMappageRoute
   '/monitorpage': typeof AuthzMonitorpageRoute
+  '/check-email': typeof AuthnCheckEmailLazyRoute
   '/reset-password': typeof AuthnResetPasswordLazyRoute
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
@@ -112,8 +114,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mappage': typeof AuthzMappageRoute
   '/monitorpage': typeof AuthzMonitorpageRoute
+  '/check-email': typeof AuthnCheckEmailLazyRoute
   '/reset-password': typeof AuthnResetPasswordLazyRoute
   '/sign-in': typeof AuthnSignInLazyRoute
   '/sign-up': typeof AuthnSignUpLazyRoute
@@ -127,8 +129,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authn': typeof AuthnRouteWithChildren
   '/_authz': typeof AuthzRouteWithChildren
-  '/_authz/mappage': typeof AuthzMappageRoute
   '/_authz/monitorpage': typeof AuthzMonitorpageRoute
+  '/_authn/check-email': typeof AuthnCheckEmailLazyRoute
   '/_authn/reset-password': typeof AuthnResetPasswordLazyRoute
   '/_authn/sign-in': typeof AuthnSignInLazyRoute
   '/_authn/sign-up': typeof AuthnSignUpLazyRoute
@@ -141,8 +143,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mappage'
     | '/monitorpage'
+    | '/check-email'
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
@@ -153,8 +155,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/mappage'
     | '/monitorpage'
+    | '/check-email'
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
@@ -167,8 +169,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authn'
     | '/_authz'
-    | '/_authz/mappage'
     | '/_authz/monitorpage'
+    | '/_authn/check-email'
     | '/_authn/reset-password'
     | '/_authn/sign-in'
     | '/_authn/sign-up'
@@ -256,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthnResetPasswordLazyRouteImport
       parentRoute: typeof AuthnRoute
     }
+    '/_authn/check-email': {
+      id: '/_authn/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof AuthnCheckEmailLazyRouteImport
+      parentRoute: typeof AuthnRoute
+    }
     '/_authz/monitorpage': {
       id: '/_authz/monitorpage'
       path: '/monitorpage'
@@ -263,23 +272,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthzMonitorpageRouteImport
       parentRoute: typeof AuthzRoute
     }
-    '/_authz/mappage': {
-      id: '/_authz/mappage'
-      path: '/mappage'
-      fullPath: '/mappage'
-      preLoaderRoute: typeof AuthzMappageRouteImport
-      parentRoute: typeof AuthzRoute
-    }
   }
 }
 
 interface AuthnRouteChildren {
+  AuthnCheckEmailLazyRoute: typeof AuthnCheckEmailLazyRoute
   AuthnResetPasswordLazyRoute: typeof AuthnResetPasswordLazyRoute
   AuthnSignInLazyRoute: typeof AuthnSignInLazyRoute
   AuthnSignUpLazyRoute: typeof AuthnSignUpLazyRoute
 }
 
 const AuthnRouteChildren: AuthnRouteChildren = {
+  AuthnCheckEmailLazyRoute: AuthnCheckEmailLazyRoute,
   AuthnResetPasswordLazyRoute: AuthnResetPasswordLazyRoute,
   AuthnSignInLazyRoute: AuthnSignInLazyRoute,
   AuthnSignUpLazyRoute: AuthnSignUpLazyRoute,
@@ -288,7 +292,6 @@ const AuthnRouteChildren: AuthnRouteChildren = {
 const AuthnRouteWithChildren = AuthnRoute._addFileChildren(AuthnRouteChildren)
 
 interface AuthzRouteChildren {
-  AuthzMappageRoute: typeof AuthzMappageRoute
   AuthzMonitorpageRoute: typeof AuthzMonitorpageRoute
   AuthzDashboardLazyRoute: typeof AuthzDashboardLazyRoute
   AuthzFailuresLazyRoute: typeof AuthzFailuresLazyRoute
@@ -297,7 +300,6 @@ interface AuthzRouteChildren {
 }
 
 const AuthzRouteChildren: AuthzRouteChildren = {
-  AuthzMappageRoute: AuthzMappageRoute,
   AuthzMonitorpageRoute: AuthzMonitorpageRoute,
   AuthzDashboardLazyRoute: AuthzDashboardLazyRoute,
   AuthzFailuresLazyRoute: AuthzFailuresLazyRoute,

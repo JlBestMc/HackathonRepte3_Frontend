@@ -41,7 +41,7 @@ const Aside = () => {
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
                                     <Circle className="stroke-blue-600" />
-                                    Harkcoding name
+                                    Name
                                     <ChevronRight className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>

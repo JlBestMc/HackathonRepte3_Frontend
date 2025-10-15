@@ -1,6 +1,5 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { supabase } from '@/services/supabaseService'
-
 import MainAuthn from '@layouts/authn/Main'
 
 export const Route = createFileRoute('/_authn')({
