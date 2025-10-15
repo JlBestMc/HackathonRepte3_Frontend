@@ -2,63 +2,62 @@
   "districts": [
     {
       "name": "Sants - Montjuïc",
-      "anomalies": 8,
-      "description": "Zona industrial con alto consumo no residencial",
+      "median_consumption_m3": 853574,
+      "description": "Mediana de consumo: 853,574 m³",
       "position": { "top": 600, "left": 60, "width": 240, "height": 80 }
     },
     {
       "name": "Eixample",
-      "anomalies": 3,
-      "description": "Consumo estable, pero con picos en horas punta",
+      "median_consumption_m3": 1684284,
+      "description": "Mediana de consumo: 1,684,284 m³",
       "position": { "top": 470, "left": 420, "width": 90, "height": 50 }
     },
     {
       "name": "Ciutat Vella",
-      "anomalies": 5,
-      "description": "Redes antiguas con fugas detectadas",
+      "median_consumption_m3": 812061,
+      "description": "Mediana de consumo: 812,061 m³",
       "position": { "top": 550, "left": 440, "width": 80, "height": 60 }
     },
     {
       "name": "Sant Martí",
-      "anomalies": 12,
-      "description": "Zona en expansión con nuevas conexiones",
+      "median_consumption_m3": 970887,
+      "description": "Mediana de consumo: 970,887 m³",
       "position": { "top": 530, "left": 600, "width": 120, "height": 70 }
     },
     {
       "name": "Gràcia",
-      "anomalies": 2,
-      "description": "Consumo residencial bajo, poca actividad comercial",
+      "median_consumption_m3": 692508,
+      "description": "Mediana de consumo: 692,508 m³",
       "position": { "top": 400, "left": 480, "width": 70, "height": 50 }
     },
     {
       "name": "Horta - Guinardó",
-      "anomalies": 4,
-      "description": "Zona residencial con baja densidad",
+      "median_consumption_m3": 813230,
+      "description": "Mediana de consumo: 813,230 m³",
       "position": { "top": 210, "left": 550, "width": 100, "height": 90 }
     },
-    
     {
       "name": "Sant Andreu",
-      "anomalies": 7,
-      "description": "Conexiones industriales con variabilidad alta",
+      "median_consumption_m3": 782766,
+      "description": "Mediana de consumo: 782,766 m³",
       "position": { "top": 390, "left": 710, "width": 80, "height": 60 }
     },
     {
       "name": "Les Corts",
-      "anomalies": 3,
-      "description": "Zona universitaria con consumo estacional",
+      "median_consumption_m3": 968670,
+      "description": "Mediana de consumo: 968,670 m³",
       "position": { "top": 360, "left": 260, "width": 70, "height": 50 }
     },
     {
       "name": "Sarrià - St. Gervasi",
-      "anomalies": 1,
-      "description": "Zona residencial de alto poder adquisitivo",
+      "median_consumption_m3": 1122498,
+      "description": "Mediana de consumo: 1,122,498 m³",
       "position": { "top": 210, "left": 350, "width": 100, "height": 150 }
     },
     {
       "name": "Nou Barris",
-      "anomalies": 6,
-      "description": "Zona con alta demanda por servicios públicos",
+      "median_consumption_m3": 250478,
+      "description": "Mediana de consumo: 250,478 m³",
       "position": { "top": 270, "left": 710, "width": 90, "height": 70 }
     }
   ]
