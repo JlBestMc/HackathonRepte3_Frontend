@@ -45,17 +45,19 @@ Sigue estos pasos para ejecutar el proyecto localmente:
 
 https://github.com/JlBestMc/HackathonRepte3_Frontend.git
 
-2. **Instalar las dependencias:**
+2. **Cambiar nombre de archivo .env.test por .env y añadir API keys de Supabase**
+
+3. **Instalar las dependencias:**
 
 Instalar las dependencias:
 
 npm install
 
-3. **Iniciar el servidor de desarrollo:**
+4. **Iniciar el servidor de desarrollo:**
 
 npm run dev
 
-4. **Compilar para producción:**
+5. **Compilar para producción:**
 
 npm run build
 
